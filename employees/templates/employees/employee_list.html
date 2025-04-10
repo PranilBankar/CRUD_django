@@ -1,0 +1,306 @@
+{% extends 'employees/base.html' %}
+
+{% block content %}
+<div class="employee-container">
+    <div class="header-section">
+        <h1 class="page-title">Employee Directory</h1>
+        <a href="{% url 'employee_create' %}" class="add-employee-btn">
+            <i class="fas fa-user-plus"></i> Add Employee
+        </a>
+    </div>
+
+    <div class="employee-list">
+        {% for employee in employees %}
+        <div class="employee-card">
+            <div class="employee-avatar">
+                {% if employee.profile_pic %}
+                    <img src="{{ employee.profile_pic.url }}" alt="{{ employee.name }}">
+                {% else %}
+                    <div class="avatar-placeholder">{{ employee.name|slice:":1" }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="employee-details">
+                <h3 class="employee-name">{{ employee.name }}</h3>
+                <p class="employee-email">{{ employee.email }}</p>
+                
+                <div class="employee-meta">
+                    <span class="badge department">{{ employee.department }}</span>
+                    <span class="position">{{ employee.position }}</span>
+                </div>
+                
+                <div class="employee-stats">
+                    <div class="stat-item">
+                        <span class="stat-label">Salary</span>
+                        <span class="stat-value">₹{{ employee.salary }}</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Joined</span>
+                        <span class="stat-value">{{ employee.hire_date|date:"M d, Y" }}</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="employee-actions">
+                <a href="{% url 'employee_update' employee.pk %}" class="action-btn edit-btn">
+                    <i class="fas fa-edit"></i> Edit
+                </a>
+                <a href="{% url 'employee_delete' employee.pk %}" class="action-btn delete-btn">
+                    <i class="fas fa-trash-alt"></i> Delete
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+    :root {
+        --primary: #4361ee;
+        --primary-light: #4895ef;
+        --secondary: #f72585;
+        --dark: #212529;
+        --light: #f8f9fa;
+        --gray: #6c757d;
+        --light-gray: #e9ecef;
+        --success: #4cc9f0;
+        --warning: #f8961e;
+        --danger: #ef233c;
+        --border-radius: 12px;
+        --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        --transition: all 0.3s ease;
+    }
+
+    .employee-container {
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 0 1.5rem;
+    }
+
+    .header-section {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+
+    .page-title {
+        font-size: 2rem;
+        color: var(--dark);
+        font-weight: 600;
+    }
+
+    .add-employee-btn {
+        background-color: var(--primary);
+        color: white;
+        padding: 0.8rem 1.5rem;
+        border-radius: var(--border-radius);
+        text-decoration: none;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: var(--transition);
+        box-shadow: var(--shadow);
+    }
+
+    .add-employee-btn:hover {
+        background-color: var(--primary-light);
+        transform: translateY(-2px);
+    }
+
+    .employee-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .employee-card {
+        background: white;
+        border-radius: var(--border-radius);
+        padding: 1.5rem;
+        box-shadow: var(--shadow);
+        transition: var(--transition);
+        display: flex;
+        flex-direction: column;
+        border-left: 4px solid var(--primary);
+    }
+
+    .employee-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .employee-avatar {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        overflow: hidden;
+        margin-bottom: 1.5rem;
+        background-color: var(--light-gray);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .employee-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .avatar-placeholder {
+        font-size: 2rem;
+        font-weight: bold;
+        color: var(--primary);
+    }
+
+    .employee-details {
+        flex: 1;
+    }
+
+    .employee-name {
+        font-size: 1.3rem;
+        color: var(--dark);
+        margin-bottom: 0.5rem;
+    }
+
+    .employee-email {
+        color: var(--gray);
+        margin-bottom: 1rem;
+        font-size: 0.9rem;
+    }
+
+    .employee-meta {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .badge {
+        padding: 0.3rem 0.8rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 500;
+    }
+
+    .department {
+        background-color: rgba(67, 97, 238, 0.1);
+        color: var(--primary);
+    }
+
+    .position {
+        color: var(--gray);
+        font-size: 0.9rem;
+    }
+
+    .employee-stats {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .stat-item {
+        background-color: var(--light);
+        padding: 0.8rem;
+        border-radius: var(--border-radius);
+    }
+
+    .stat-label {
+        display: block;
+        font-size: 0.8rem;
+        color: var(--gray);
+        margin-bottom: 0.3rem;
+    }
+
+    .stat-value {
+        font-weight: 600;
+        color: var(--dark);
+    }
+
+    .employee-actions {
+        display: flex;
+        gap: 0.8rem;
+        margin-top: auto;
+    }
+
+    .action-btn {
+        flex: 1;
+        padding: 0.6rem;
+        border-radius: var(--border-radius);
+        text-align: center;
+        text-decoration: none;
+        font-size: 0.9rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        transition: var(--transition);
+    }
+
+    .edit-btn {
+        background-color: rgba(248, 150, 30, 0.1);
+        color: var(--warning);
+        border: 1px solid rgba(248, 150, 30, 0.3);
+    }
+
+    .edit-btn:hover {
+        background-color: rgba(248, 150, 30, 0.2);
+    }
+
+    .delete-btn {
+        background-color: rgba(239, 35, 60, 0.1);
+        color: var(--danger);
+        border: 1px solid rgba(239, 35, 60, 0.3);
+    }
+
+    .delete-btn:hover {
+        background-color: rgba(239, 35, 60, 0.2);
+    }
+
+    @media (max-width: 768px) {
+        .header-section {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+        
+        .employee-list {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<!-- Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<script>
+    // Simple animation on page load
+    document.addEventListener('DOMContentLoaded', () => {
+        const cards = document.querySelectorAll('.employee-card');
+        cards.forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            card.style.animation = `fadeInUp 0.5s ease forwards ${index * 0.1}s`;
+        });
+        
+        // Add style tag with animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    });
+</script>
+{% endblock %}
